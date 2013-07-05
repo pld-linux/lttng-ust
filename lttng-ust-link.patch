@@ -1,0 +1,11 @@
+--- lttng-ust-2.2.0/liblttng-ust-java/Makefile.am.orig	2013-06-25 20:47:01.000000000 +0200
++++ lttng-ust-2.2.0/liblttng-ust-java/Makefile.am	2013-07-05 18:09:37.362017852 +0200
+@@ -6,7 +6,7 @@
+ liblttng_ust_java_la_SOURCES = LTTngUst.c lttng_ust_java.h
+ nodist_liblttng_ust_java_la_SOURCES = org_lttng_ust_LTTngUst.h
+ dist_noinst_DATA = LTTngUst.java
+-liblttng_ust_java_la_LIBADD = -lc -L$(top_builddir)/liblttng-ust/.libs -llttng-ust
++liblttng_ust_java_la_LIBADD = $(top_builddir)/liblttng-ust/liblttng-ust.la -ldl
+ 
+ all: LTTngUst.class org_lttng_ust_LTTngUst.h liblttng-ust-java.jar
+ 
