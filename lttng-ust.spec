@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	java		# JNI interface
-%bcond_with	systemtap	# SystemTap integration
+%bcond_without	systemtap	# SystemTap integration
 #
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
@@ -18,8 +18,8 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	rpmbuild(macros) >= 1.294
-%{?with_systemtap:BuildRequires:	systemtap-devel}
 BuildRequires:	libtool >= 2:2
+%{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	userspace-rcu-devel >= 0.7.2
 Requires:	userspace-rcu >= 0.7.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
