@@ -1,0 +1,29 @@
+--- lttng-ust-2.3.1/liblttng-ust-java/Makefile.am.orig	2013-11-15 21:21:13.337850224 +0100
++++ lttng-ust-2.3.1/liblttng-ust-java/Makefile.am	2013-11-15 21:29:47.031161998 +0100
+@@ -8,7 +8,7 @@
+ dist_noinst_DATA = LTTngUst.java
+ liblttng_ust_java_la_LIBADD = $(top_builddir)/liblttng-ust/liblttng-ust.la -ldl
+ 
+-all: LTTngUst.class org_lttng_ust_LTTngUst.h liblttng-ust-java.jar
++all: org/lttng/ust/LTTngUst.class org_lttng_ust_LTTngUst.h liblttng-ust-java.jar
+ 
+ clean-local:
+ 	rm -f org_lttng_ust_LTTngUst.h
+@@ -17,13 +17,13 @@
+ 
+ LTTngUst.c: org_lttng_ust_LTTngUst.h
+ 
+-LTTngUst.class: LTTngUst.java
++org/lttng/ust/LTTngUst.class: LTTngUst.java
+ 	javac -d "$(builddir)" "$(srcdir)/LTTngUst.java"
+ 
+-org_lttng_ust_LTTngUst.h: LTTngUst.class
+-	javah org.lttng.ust.LTTngUst
++org_lttng_ust_LTTngUst.h: org/lttng/ust/LTTngUst.class
++	javah -classpath . org.lttng.ust.LTTngUst
+ 
+-liblttng-ust-java.jar: LTTngUst.class
++liblttng-ust-java.jar: org/lttng/ust/LTTngUst.class
+ 	jar cf liblttng-ust-java.jar org/*
+ 
+ endif
