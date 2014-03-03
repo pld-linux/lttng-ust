@@ -6,14 +6,13 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.3.1
+Version:	2.4.0
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	e6a3fd7d4c104b7af2e9098bba5d2499
+# Source0-md5:	6c8c3e4a339f9db11c047bd83e48c5fe
 Patch0:		%{name}-link.patch
-Patch1:		%{name}-java.patch
 URL:		http://lttng.org/ust
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -25,8 +24,8 @@ BuildRequires:	userspace-rcu-devel >= 0.7.2
 Requires:	userspace-rcu >= 0.7.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-# rcu_reader_bp is some kind of symbol that check doesn't support
-%define		skip_post_check_so	liblttng-ust-cyg-profile\.so.* liblttng-ust-cyg-profile-fast\.so.* liblttng-ust-tracepoint\.so.*
+# rcu_reader_bp is not a function, but some kind of symbol that check doesn't support
+%define		skip_post_check_so	liblttng-ust\.so.* liblttng-ust-cyg-profile\.so.* liblttng-ust-cyg-profile-fast\.so.* liblttng-ust-dl\.so.* liblttng-ust-tracepoint\.so.*
 
 %description
 The LTTng Userspace Tracer (UST) is a library accompanied by a set of
@@ -76,7 +75,6 @@ Interfejs JNI do biblioteki LTTng Userspace Tracer.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -84,10 +82,10 @@ Interfejs JNI do biblioteki LTTng Userspace Tracer.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-%{?with_java:CPPFLAGS="%{rpmcppflags} -I%{_jvmdir}/java/include -I%{_jvmdir}/java/include/linux"}
+export CLASSPATH=.
 %configure \
 	--disable-silent-rules \
-	%{?with_java:--with-jni-interface} \
+	%{?with_java:--with-java-jdk=%{java_home} --with-jni-interface} \
 	%{?with_systemtap:--with-sdt}
 
 %{__make}
@@ -96,19 +94,20 @@ Interfejs JNI do biblioteki LTTng Userspace Tracer.
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	lttnglibjavadir=%{_javadir}
 
 # *.la kept - no .pc files for individual libraries
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}
 %{__mv} $RPM_BUILD_ROOT%{_docdir}/lttng-ust/examples $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 # packaged as %doc
-%{__rm} $RPM_BUILD_ROOT%{_docdir}/lttng-ust/{ChangeLog,README}
+%{__rm} $RPM_BUILD_ROOT%{_docdir}/lttng-ust/{ChangeLog,README,java-util-logging.txt}
 
 %if %{with java}
 install -d $RPM_BUILD_ROOT%{_javadir}
 cp -p liblttng-ust-java/liblttng-ust-java.jar $RPM_BUILD_ROOT%{_javadir}
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-java.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{java,jul-jni}.{la,a}
 %endif
 
 %clean
@@ -131,10 +130,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-cyg-profile.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile-fast.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-cyg-profile-fast.so.0
+%attr(755,root,root) %{_libdir}/liblttng-ust-dl.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-dl.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-fork.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-fork.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-libc-wrapper.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-libc-wrapper.so.0
+%attr(755,root,root) %{_libdir}/liblttng-ust-pthread-wrapper.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-pthread-wrapper.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-tracepoint.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-tracepoint.so.0
 
@@ -145,21 +148,26 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblttng-ust-ctl.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile-fast.so
+%attr(755,root,root) %{_libdir}/liblttng-ust-dl.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-fork.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-libc-wrapper.so
+%attr(755,root,root) %{_libdir}/liblttng-ust-pthread-wrapper.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-tracepoint.so
 %{_libdir}/liblttng-ust.la
 %{_libdir}/liblttng-ust-ctl.la
 %{_libdir}/liblttng-ust-cyg-profile.la
 %{_libdir}/liblttng-ust-cyg-profile-fast.la
+%{_libdir}/liblttng-ust-dl.la
 %{_libdir}/liblttng-ust-fork.la
 %{_libdir}/liblttng-ust-libc-wrapper.la
+%{_libdir}/liblttng-ust-pthread-wrapper.la
 %{_libdir}/liblttng-ust-tracepoint.la
 %{_includedir}/lttng
 %{_pkgconfigdir}/lttng-ust.pc
 %{_mandir}/man1/lttng-gen-tp.1*
 %{_mandir}/man3/lttng-ust.3*
 %{_mandir}/man3/lttng-ust-cyg-profile.3*
+%{_mandir}/man3/lttng-ust-dl.3*
 %{_examplesdir}/%{name}-%{version}
 
 %files static
@@ -168,15 +176,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblttng-ust-ctl.a
 %{_libdir}/liblttng-ust-cyg-profile.a
 %{_libdir}/liblttng-ust-cyg-profile-fast.a
+%{_libdir}/liblttng-ust-dl.a
 %{_libdir}/liblttng-ust-fork.a
 %{_libdir}/liblttng-ust-libc-wrapper.a
+%{_libdir}/liblttng-ust-pthread-wrapper.a
 %{_libdir}/liblttng-ust-tracepoint.a
 
 %if %{with java}
 %files -n java-lttng-ust
 %defattr(644,root,root,755)
+%doc doc/java-util-logging.txt
 %attr(755,root,root) %{_libdir}/liblttng-ust-java.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-java.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-java.so
+%attr(755,root,root) %{_libdir}/liblttng-ust-jul-jni.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-jul-jni.so.0
+%attr(755,root,root) %{_libdir}/liblttng-ust-jul-jni.so
 %{_javadir}/liblttng-ust-java.jar
+%{_javadir}/liblttng-ust-jul.jar
 %endif
