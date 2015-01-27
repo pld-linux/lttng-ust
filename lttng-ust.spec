@@ -6,21 +6,26 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.5.1
+Version:	2.6.0
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	d551d601bdc1a9285e1cd6c5728fb803
+# Source0-md5:	74ad4826eac76c9dbf50fd3e46523191
 Patch0:		%{name}-link.patch
+Patch1:		%{name}-java.patch
 URL:		http://lttng.org/ust
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-%{?with_java:BuildRequires:	jdk}
 BuildRequires:	rpmbuild(macros) >= 1.294
 BuildRequires:	libtool >= 2:2
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	userspace-rcu-devel >= 0.7.2
+%if %{with java}
+BuildRequires:	java-log4j
+BuildRequires:	jdk
+BuildRequires:	jpackage-utils
+%endif
 Requires:	userspace-rcu >= 0.7.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -75,6 +80,7 @@ Interfejs JNI do biblioteki LTTng Userspace Tracer.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -82,10 +88,11 @@ Interfejs JNI do biblioteki LTTng Userspace Tracer.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-export CLASSPATH=.
+export CLASSPATH=.:%{_javadir}/log4j.jar
 %configure \
+	%{?with_java:JAVAC="%{javac}"} \
 	--disable-silent-rules \
-	%{?with_java:--with-java-jdk=%{java_home} --with-jni-interface} \
+	%{?with_java:--enable-jni-interface --enable-java-agent-all} \
 	%{?with_systemtap:--with-sdt}
 
 %{__make}
@@ -102,12 +109,10 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}
 %{__mv} $RPM_BUILD_ROOT%{_docdir}/lttng-ust/examples $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 # packaged as %doc
-%{__rm} $RPM_BUILD_ROOT%{_docdir}/lttng-ust/{ChangeLog,README,java-util-logging.txt}
+%{__rm} $RPM_BUILD_ROOT%{_docdir}/lttng-ust/{ChangeLog,README.md,java-agent.txt}
 
 %if %{with java}
-install -d $RPM_BUILD_ROOT%{_javadir}
-cp -p liblttng-ust-java/liblttng-ust-java.jar $RPM_BUILD_ROOT%{_javadir}
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{java,jul-jni}.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{java,jul-jni,log4j-jni}.{la,a}
 %endif
 
 %clean
@@ -121,7 +126,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING ChangeLog README
+%doc COPYING ChangeLog README.md
 %attr(755,root,root) %{_libdir}/liblttng-ust.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-ctl.so.*.*.*
@@ -185,13 +190,18 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with java}
 %files -n java-lttng-ust
 %defattr(644,root,root,755)
-%doc doc/java-util-logging.txt
+%doc doc/java-agent.txt
 %attr(755,root,root) %{_libdir}/liblttng-ust-java.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-java.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-java.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-jul-jni.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-jul-jni.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-jul-jni.so
+%attr(755,root,root) %{_libdir}/liblttng-ust-log4j-jni.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-log4j-jni.so.0
+%attr(755,root,root) %{_libdir}/liblttng-ust-log4j-jni.so
+%{_javadir}/liblttng-ust-agent-1.0.0.jar
+%{_javadir}/liblttng-ust-agent.jar
 %{_javadir}/liblttng-ust-java.jar
 %{_javadir}/liblttng-ust-jul.jar
 %endif

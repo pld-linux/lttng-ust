@@ -1,0 +1,11 @@
+--- lttng-ust-2.6.0/liblttng-ust-java/Makefile.am.orig	2015-01-27 16:26:04.867994970 +0100
++++ lttng-ust-2.6.0/liblttng-ust-java/Makefile.am	2015-01-27 17:05:53.134561412 +0100
+@@ -19,7 +19,7 @@
+ 
+ org_lttng_ust_LTTngUst.h: jni-header.stamp
+ 
+-jni-header.stamp: $(dist_noinst_JAVA)
++jni-header.stamp: classnoinst.stamp
+ 	$(JAVAH) -classpath $(srcdir) $(JAVAHFLAGS) org.lttng.ust.LTTngUst && \
+ 	echo "JNI header generated" > jni-header.stamp
+ 
