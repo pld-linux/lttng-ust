@@ -7,7 +7,7 @@ Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
 Version:	2.6.0
-Release:	1
+Release:	2
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
@@ -46,6 +46,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek LTTNG-UST
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	userspace-rcu-devel >= 0.7.2
+%{?with_systemtap:Requires:	systemtap-sdt-devel}
 
 %description devel
 Header files for LTTNG-UST libraries.
