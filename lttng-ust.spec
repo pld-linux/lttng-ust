@@ -7,7 +7,7 @@ Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
 Version:	2.6.0
-Release:	3
+Release:	4
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
@@ -91,7 +91,7 @@ Interfejs JNI do biblioteki LTTng Userspace Tracer.
 %{__automake}
 export CLASSPATH=.:%{_javadir}/log4j.jar
 %configure \
-	%{?with_java:JAVAC="%{javac}"} \
+	%{?with_java:JAVA_HOME="%{java_home}"} \
 	--disable-silent-rules \
 	%{?with_java:--enable-jni-interface --enable-java-agent-all} \
 	%{?with_systemtap:--with-sdt}
