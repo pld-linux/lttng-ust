@@ -1,23 +1,24 @@
 #
 # Conditional build:
-%bcond_without	java		# JNI interface
+%bcond_without	java		# JNI interface [builds with java-sun 1.6, but not gcj 4.9]
 %bcond_without	systemtap	# SystemTap integration
 #
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.6.0
-Release:	4
+Version:	2.6.1
+Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	74ad4826eac76c9dbf50fd3e46523191
+# Source0-md5:	5c7de27a9968e01ac0b08c7c9cf554d0
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
 URL:		http://lttng.org/ust
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	rpmbuild(macros) >= 1.294
+BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	userspace-rcu-devel >= 0.7.2
@@ -91,7 +92,7 @@ Interfejs JNI do biblioteki LTTng Userspace Tracer.
 %{__automake}
 export CLASSPATH=.:%{_javadir}/log4j.jar
 %configure \
-	%{?with_java:JAVA_HOME="%{java_home}"} \
+	%{?with_java:JAVA_HOME="%{java_home}" JAVAC=javac} \
 	--disable-silent-rules \
 	%{?with_java:--enable-jni-interface --enable-java-agent-all} \
 	%{?with_systemtap:--with-sdt}
