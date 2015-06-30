@@ -6,12 +6,12 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.6.1
+Version:	2.6.2
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	5c7de27a9968e01ac0b08c7c9cf554d0
+# Source0-md5:	f74a27630ba928be8b88f5006655d1e3
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
 URL:		http://lttng.org/ust
@@ -28,6 +28,7 @@ BuildRequires:	jdk
 BuildRequires:	jpackage-utils
 %endif
 Requires:	userspace-rcu >= 0.7.2
+ExclusiveArch:	%{ix86} %{x8664} arm aarch64 mips ppc ppc64 s390 s390x tile
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # rcu_reader_bp is not a function, but some kind of symbol that check doesn't support
