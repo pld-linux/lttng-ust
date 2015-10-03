@@ -1,25 +1,28 @@
 #
 # Conditional build:
 %bcond_without	java		# JNI interface [builds with java-sun 1.6, but not gcj 4.9]
+%bcond_without	python		# Python agent
 %bcond_without	systemtap	# SystemTap integration
 #
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.6.3
+Version:	2.7.0
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	35945155593be0b7a53689bc0b1c8018
+# Source0-md5:	e9d1e6ea38bc3109a917472d657d6eb8
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
+Patch2:		%{name}-python.patch
 URL:		http://lttng.org/ust
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	rpmbuild(macros) >= 1.294
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
+%{?with_python:BuildRequires:	python >= 1:2.7}
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	userspace-rcu-devel >= 0.7.2
 %if %{with java}
@@ -80,10 +83,23 @@ JNI interface for LTTng Userspace Tracer library.
 %description -n java-lttng-ust -l pl.UTF-8
 Interfejs JNI do biblioteki LTTng Userspace Tracer.
 
+%package -n python-lttng-ust
+Summary:	Python agent for LTTng Userspace Tracer library
+Summary(pl.UTF-8):	Agent Pythona do biblioteki LTTng Userspace Tracer
+Group:		Libraries/Python
+Requires:	%{name} = %{version}-%{release}
+
+%description -n python-lttng-ust
+Python agent for LTTng Userspace Tracer library.
+
+%description -n python-lttng-ust -l pl.UTF-8
+Agent Pythona do biblioteki LTTng Userspace Tracer.
+
 %prep
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -96,6 +112,7 @@ export CLASSPATH=.:%{_javadir}/log4j.jar
 	%{?with_java:JAVA_HOME="%{java_home}" JAVAC=javac} \
 	--disable-silent-rules \
 	%{?with_java:--enable-jni-interface --enable-java-agent-all} \
+	%{?with_python:--enable-python-agent} \
 	%{?with_systemtap:--with-sdt}
 
 %{__make}
@@ -117,6 +134,10 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}
 %if %{with java}
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{java,jul-jni,log4j-jni}.{la,a}
 %endif
+%if %{with python}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-python-agent.{la,a}
+%py_postclean
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -126,6 +147,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	-n java-lttng-ust -p /sbin/ldconfig
 %postun	-n java-lttng-ust -p /sbin/ldconfig
+
+%post	-n python-lttng-ust -p /sbin/ldconfig
+%postun	-n python-lttng-ust -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -207,4 +231,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/liblttng-ust-agent.jar
 %{_javadir}/liblttng-ust-java.jar
 %{_javadir}/liblttng-ust-jul.jar
+%endif
+
+%if %{with python}
+%files -n python-lttng-ust
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/liblttng-ust-python-agent.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-python-agent.so.0
+%attr(755,root,root) %{_libdir}/liblttng-ust-python-agent.so
+%{py_sitescriptdir}/lttngust
+%{py_sitescriptdir}/lttngust-%{version}-py*.egg-info
 %endif

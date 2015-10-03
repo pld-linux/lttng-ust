@@ -1,0 +1,11 @@
+--- lttng-ust-2.7.0/liblttng-ust-python-agent/Makefile.am.orig	2015-09-24 22:41:04.000000000 +0200
++++ lttng-ust-2.7.0/liblttng-ust-python-agent/Makefile.am	2015-10-03 18:16:54.993333507 +0200
+@@ -18,7 +18,7 @@
+ 	if [ "$(DESTDIR)" = "" ]; then \
+ 		$(PYTHON) setup.py install --prefix=$(prefix) --record install_files.txt  --verbose --no-compile $(DISTSETUPOPTS);  \
+ 	else \
+-		$(PYTHON) setup.py install --root=$(DESTDIR) --verbose install_files.txt  --prefix=$(prefix) --no-compile $(DISTSETUPOPTS); \
++		$(PYTHON) setup.py install --root=$(DESTDIR) --verbose --record install_files.txt  --prefix=$(prefix) --optimize=2 $(DISTSETUPOPTS); \
+ 	fi
+ clean-local:
+ 	rm -rf build
