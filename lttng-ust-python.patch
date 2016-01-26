@@ -5,7 +5,7 @@
  
  install-exec-local:
 -	@opts="--prefix=$(prefix) --verbose --no-compile $(DISTSETUPOPTS)"; \
-+	@opts="--prefix=$(prefix) --verbose --optimize=2 $(DISTSETUPOPTS)"; \
++	@opts="--prefix=$(prefix) --install-purelib=$(pythondir) --verbose --optimize=2 $(DISTSETUPOPTS)"; \
  	if [ "$(DESTDIR)" != "" ]; then \
  		opts="$$opts --root=$(DESTDIR)"; \
  	fi; \
