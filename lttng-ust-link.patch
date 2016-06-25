@@ -19,19 +19,45 @@
  
  $(jarfile): classnoinst.stamp
  	$(JAR) cf $(JARFLAGS) $@ $(pkgpath)/*.class
---- lttng-ust-2.6.0/liblttng-ust-java-agent/jni/jul/Makefile.am.orig	2015-01-26 20:39:58.000000000 +0100
-+++ lttng-ust-2.6.0/liblttng-ust-java-agent/jni/jul/Makefile.am	2015-01-26 21:17:08.297554669 +0100
-@@ -6,4 +6,4 @@
+--- lttng-ust-2.8.1/liblttng-ust-java-agent/jni/jul/Makefile.am.orig	2016-06-25 12:12:34.117486360 +0200
++++ lttng-ust-2.8.1/liblttng-ust-java-agent/jni/jul/Makefile.am	2016-06-25 12:14:28.320201004 +0200
+@@ -7,7 +7,5 @@
+ nodist_liblttng_ust_jul_jni_la_SOURCES = org_lttng_ust_agent_jul_LttngJulApi.h
  
- nodist_liblttng_ust_jul_jni_la_SOURCES = org_lttng_ust_agent_jul_LTTngLogHandler.h
+ liblttng_ust_jul_jni_la_LIBADD = -lc \
+-	-L$(top_builddir)/liblttng-ust/.libs \
+-	-L$(top_builddir)/liblttng-ust-java-agent/jni/common/.libs \
+-	-llttng-ust-context-jni \
+-	-llttng-ust
++	$(top_builddir)/liblttng-ust-java-agent/jni/common/liblttng-ust-context-jni.la \
++	$(top_builddir)/liblttng-ust/liblttng-ust.la
+--- lttng-ust-2.8.1/liblttng-ust-java-agent/jni/log4j/Makefile.am.orig	2016-06-25 12:12:34.117486360 +0200
++++ lttng-ust-2.8.1/liblttng-ust-java-agent/jni/log4j/Makefile.am	2016-06-25 12:15:29.779868049 +0200
+@@ -7,7 +7,5 @@
+ nodist_liblttng_ust_log4j_jni_la_SOURCES = org_lttng_ust_agent_log4j_LttngLog4jApi.h
  
--liblttng_ust_jul_jni_la_LIBADD = -lc -L$(top_builddir)/liblttng-ust/.libs -llttng-ust
-+liblttng_ust_jul_jni_la_LIBADD = -lc $(top_builddir)/liblttng-ust/liblttng-ust.la
---- lttng-ust-2.6.0/liblttng-ust-java-agent/jni/log4j/Makefile.am.orig	2015-01-26 20:39:58.000000000 +0100
-+++ lttng-ust-2.6.0/liblttng-ust-java-agent/jni/log4j/Makefile.am	2015-01-26 21:17:37.837553389 +0100
+ liblttng_ust_log4j_jni_la_LIBADD = -lc \
+-	-L$(top_builddir)/liblttng-ust/.libs \
+-	-L$(top_builddir)/liblttng-ust-java-agent/jni/common/.libs \
+-	-llttng-ust-context-jni \
+-	-llttng-ust
++	$(top_builddir)/liblttng-ust-java-agent/jni/common/liblttng-ust-context-jni.la \
++	$(top_builddir)/liblttng-ust/liblttng-ust.la
+--- lttng-ust-2.8.1/liblttng-ust-java-agent/jni/common/Makefile.am.orig	2016-05-31 06:38:27.000000000 +0200
++++ lttng-ust-2.8.1/liblttng-ust-java-agent/jni/common/Makefile.am	2016-06-25 12:15:51.336417933 +0200
 @@ -5,4 +5,4 @@
  
- nodist_liblttng_ust_log4j_jni_la_SOURCES = org_lttng_ust_agent_log4j_LTTngLogAppender.h
+ nodist_liblttng_ust_context_jni_la_SOURCES = org_lttng_ust_agent_context_LttngContextApi.h
  
--liblttng_ust_log4j_jni_la_LIBADD = -lc -L$(top_builddir)/liblttng-ust/.libs -llttng-ust
-+liblttng_ust_log4j_jni_la_LIBADD = -lc $(top_builddir)/liblttng-ust/liblttng-ust.la
+-liblttng_ust_context_jni_la_LIBADD = -lc -L$(top_builddir)/liblttng-ust/.libs -llttng-ust
++liblttng_ust_context_jni_la_LIBADD = -lc $(top_builddir)/liblttng-ust/liblttng-ust.la
+--- lttng-ust-2.8.1/liblttng-ust-python-agent/Makefile.am.orig	2016-06-25 12:16:24.649570794 +0200
++++ lttng-ust-2.8.1/liblttng-ust-python-agent/Makefile.am	2016-06-25 12:19:01.568720691 +0200
+@@ -4,5 +4,5 @@
+ AM_CFLAGS = -fno-strict-aliasing
+ lib_LTLIBRARIES = liblttng-ust-python-agent.la
+ liblttng_ust_python_agent_la_SOURCES = lttng_ust_python.c lttng_ust_python.h
+-liblttng_ust_python_agent_la_LIBADD = -lc -llttng-ust \
+-	-L$(top_builddir)/liblttng-ust/.libs
++liblttng_ust_python_agent_la_LIBADD = -lc \
++	$(top_builddir)/liblttng-ust/liblttng-ust.la

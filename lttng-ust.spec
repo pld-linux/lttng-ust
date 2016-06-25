@@ -7,18 +7,18 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.7.2
+Version:	2.8.1
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	2fb8c45ce5e92fb0f2c12152681db8c8
+# Source0-md5:	be505077245dc05f93370a565eec15f4
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
 Patch2:		%{name}-python.patch
 URL:		http://lttng.org/ust
 BuildRequires:	autoconf >= 2.50
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.9
 BuildRequires:	rpmbuild(macros) >= 1.294
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
@@ -34,8 +34,12 @@ Requires:	userspace-rcu >= 0.7.2
 ExclusiveArch:	%{ix86} %{x8664} x32 arm aarch64 mips ppc ppc64 s390 s390x tile
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-# rcu_reader_bp is not a function, but some kind of symbol that check doesn't support
-%define		skip_post_check_so	liblttng-ust\.so.* liblttng-ust-cyg-profile\.so.* liblttng-ust-cyg-profile-fast\.so.* liblttng-ust-dl\.so.* liblttng-ust-tracepoint\.so.*
+# non-function rcu_reader_bp symbol
+%define		skip_post_check_so_1	liblttng-ust\.so.* liblttng-ust-cyg-profile\.so.* liblttng-ust-cyg-profile-fast\.so.* liblttng-ust-dl\.so.* liblttng-ust-tracepoint\.so.*
+# non-function lttng_ust_context_info_tls symbol
+%define		skip_post_check_so_2	liblttng-ust-jul-jni\.so.* liblttng-ust-log4j-jni\.so.*
+
+%define		skip_post_check_so	%{skip_post_check_so_1} %{skip_post_check_so_2}
 
 %description
 The LTTng Userspace Tracer (UST) is a library accompanied by a set of
@@ -115,7 +119,7 @@ export CLASSPATH=.:%{_javadir}/log4j.jar
 	%{?with_python:--enable-python-agent} \
 	%{?with_systemtap:--with-sdt}
 
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -132,7 +136,7 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}
 %{__rm} $RPM_BUILD_ROOT%{_docdir}/lttng-ust/{ChangeLog,README.md,java-agent.txt}
 
 %if %{with java}
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{java,jul-jni,log4j-jni}.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{context-jni,java,jul-jni,log4j-jni}.{la,a}
 %endif
 %if %{with python}
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-python-agent.{la,a}
@@ -197,9 +201,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/lttng
 %{_pkgconfigdir}/lttng-ust.pc
 %{_mandir}/man1/lttng-gen-tp.1*
+%{_mandir}/man3/do_tracepoint.3*
 %{_mandir}/man3/lttng-ust.3*
 %{_mandir}/man3/lttng-ust-cyg-profile.3*
 %{_mandir}/man3/lttng-ust-dl.3*
+%{_mandir}/man3/tracef.3*
+%{_mandir}/man3/tracelog.3*
+%{_mandir}/man3/tracepoint.3*
+%{_mandir}/man3/tracepoint_enabled.3*
 %{_examplesdir}/%{name}-%{version}
 
 %files static
@@ -218,6 +227,9 @@ rm -rf $RPM_BUILD_ROOT
 %files -n java-lttng-ust
 %defattr(644,root,root,755)
 %doc doc/java-agent.txt
+%attr(755,root,root) %{_libdir}/liblttng-ust-context-jni.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-context-jni.so.0
+%attr(755,root,root) %{_libdir}/liblttng-ust-context-jni.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-java.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-java.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-java.so
@@ -227,10 +239,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblttng-ust-log4j-jni.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-log4j-jni.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-log4j-jni.so
-%{_javadir}/liblttng-ust-agent-1.0.0.jar
 %{_javadir}/liblttng-ust-agent.jar
 %{_javadir}/liblttng-ust-java.jar
-%{_javadir}/liblttng-ust-jul.jar
+%{_javadir}/lttng-ust-agent-all-1.0.0.jar
+%{_javadir}/lttng-ust-agent-all.jar
+%{_javadir}/lttng-ust-agent-common-1.0.0.jar
+%{_javadir}/lttng-ust-agent-common.jar
+%{_javadir}/lttng-ust-agent-jul-1.0.0.jar
+%{_javadir}/lttng-ust-agent-jul.jar
+%{_javadir}/lttng-ust-agent-log4j-1.0.0.jar
+%{_javadir}/lttng-ust-agent-log4j.jar
 %endif
 
 %if %{with python}

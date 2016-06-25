@@ -1,6 +1,6 @@
---- lttng-ust-2.7.1/liblttng-ust-python-agent/Makefile.am.orig	2016-01-25 22:11:19.823939945 +0100
-+++ lttng-ust-2.7.1/liblttng-ust-python-agent/Makefile.am	2016-01-25 22:12:22.277270532 +0100
-@@ -15,7 +15,7 @@
+--- lttng-ust-2.8.1/python-lttngust/Makefile.am.orig	2016-05-31 06:38:27.000000000 +0200
++++ lttng-ust-2.8.1/python-lttngust/Makefile.am	2016-06-25 12:26:23.159661719 +0200
+@@ -6,7 +6,7 @@
  	$(PYTHON) setup.py build --verbose
  
  install-exec-local:
