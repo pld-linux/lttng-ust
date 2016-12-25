@@ -7,22 +7,24 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.8.1
+Version:	2.9.0
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	be505077245dc05f93370a565eec15f4
+# Source0-md5:	77f3378ba37a36801420bce87b702e9c
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
 Patch2:		%{name}-python.patch
 URL:		http://lttng.org/ust
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.9
-BuildRequires:	rpmbuild(macros) >= 1.294
+# for examples build
+BuildRequires:	cmake >= 2.8.11
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
 %{?with_python:BuildRequires:	python >= 1:2.7}
+BuildRequires:	rpmbuild(macros) >= 1.294
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	userspace-rcu-devel >= 0.7.2
 %if %{with java}
@@ -35,7 +37,7 @@ ExclusiveArch:	%{ix86} %{x8664} x32 arm aarch64 mips ppc ppc64 s390 s390x tile
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # non-function rcu_reader_bp symbol
-%define		skip_post_check_so_1	liblttng-ust\.so.* liblttng-ust-cyg-profile\.so.* liblttng-ust-cyg-profile-fast\.so.* liblttng-ust-dl\.so.* liblttng-ust-tracepoint\.so.*
+%define		skip_post_check_so_1	liblttng-ust\.so.* liblttng-ust-cyg-profile\.so.* liblttng-ust-cyg-profile-fast\.so.* liblttng-ust-dl\.so.* liblttng-ust-java\.so.* liblttng-ust-python-agent\.so.* liblttng-ust-tracepoint\.so.*
 # non-function lttng_ust_context_info_tls symbol
 %define		skip_post_check_so_2	liblttng-ust-jul-jni\.so.* liblttng-ust-log4j-jni\.so.*
 
@@ -168,6 +170,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-cyg-profile-fast.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-dl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-dl.so.0
+%attr(755,root,root) %{_libdir}/liblttng-ust-fd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-fd.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-fork.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-fork.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-libc-wrapper.so.*.*.*
@@ -185,6 +189,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile-fast.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-dl.so
+%attr(755,root,root) %{_libdir}/liblttng-ust-fd.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-fork.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-libc-wrapper.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-pthread-wrapper.so
@@ -194,6 +199,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblttng-ust-cyg-profile.la
 %{_libdir}/liblttng-ust-cyg-profile-fast.la
 %{_libdir}/liblttng-ust-dl.la
+%{_libdir}/liblttng-ust-fd.la
 %{_libdir}/liblttng-ust-fork.la
 %{_libdir}/liblttng-ust-libc-wrapper.la
 %{_libdir}/liblttng-ust-pthread-wrapper.la
@@ -218,6 +224,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblttng-ust-cyg-profile.a
 %{_libdir}/liblttng-ust-cyg-profile-fast.a
 %{_libdir}/liblttng-ust-dl.a
+%{_libdir}/liblttng-ust-fd.a
 %{_libdir}/liblttng-ust-fork.a
 %{_libdir}/liblttng-ust-libc-wrapper.a
 %{_libdir}/liblttng-ust-pthread-wrapper.a

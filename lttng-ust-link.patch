@@ -1,6 +1,14 @@
---- lttng-ust-2.4.0/liblttng-ust/Makefile.am.orig	2014-02-28 19:20:10.000000000 +0100
-+++ lttng-ust-2.4.0/liblttng-ust/Makefile.am	2014-03-03 10:55:00.270969760 +0100
-@@ -67,6 +67,7 @@
+--- lttng-ust-2.9.0/liblttng-ust/Makefile.am.orig	2016-11-29 02:46:24.000000000 +0100
++++ lttng-ust-2.9.0/liblttng-ust/Makefile.am	2016-12-25 00:30:14.048415399 +0100
+@@ -14,6 +14,7 @@
+ 	error.h
+ liblttng_ust_tracepoint_la_LIBADD = \
+ 	-lurcu-bp \
++	-ldl \
+ 	-lpthread \
+ 	$(top_builddir)/snprintf/libustsnprintf.la
+ liblttng_ust_tracepoint_la_LDFLAGS = -no-undefined -version-info $(LTTNG_UST_LIBRARY_VERSION)
+@@ -87,6 +88,7 @@
  	$(top_builddir)/libringbuffer/libringbuffer.la
  
  liblttng_ust_la_LIBADD = \
@@ -61,3 +69,15 @@
 -	-L$(top_builddir)/liblttng-ust/.libs
 +liblttng_ust_python_agent_la_LIBADD = -lc \
 +	$(top_builddir)/liblttng-ust/liblttng-ust.la
+--- lttng-ust-2.9.0/liblttng-ust-fd/Makefile.am.orig	2016-11-29 02:46:24.000000000 +0100
++++ lttng-ust-2.9.0/liblttng-ust-fd/Makefile.am	2016-12-25 00:31:01.575081525 +0100
+@@ -5,7 +5,8 @@
+ liblttng_ust_fd_la_SOURCES = \
+ 	lttng-ust-fd.c
+ liblttng_ust_fd_la_LIBADD = \
+-	$(top_builddir)/liblttng-ust-comm/liblttng-ust-comm.la
++	$(top_builddir)/liblttng-ust-comm/liblttng-ust-comm.la \
++	$(top_builddir)/liblttng-ust/liblttng-ust.la
+ 
+ if LTTNG_UST_BUILD_WITH_LIBDL
+ liblttng_ust_fd_la_LIBADD += -ldl
