@@ -3,16 +3,17 @@
 %bcond_without	java		# JNI interface [builds with java-sun 1.6, but not gcj 4.9]
 %bcond_without	python		# Python agent
 %bcond_without	systemtap	# SystemTap integration
+%bcond_without	static_libs	# static libraries
 #
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.9.1
+Version:	2.10.1
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	http://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	5a5636fc3d9aa370f65b25a802a79e6e
+# Source0-md5:	4863cc2f9f0a070b42438bb646bbba06
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
 Patch2:		%{name}-python.patch
@@ -119,7 +120,8 @@ export CLASSPATH=.:%{_javadir}/log4j.jar
 	--disable-silent-rules \
 	%{?with_java:--enable-jni-interface --enable-java-agent-all} \
 	%{?with_python:--enable-python-agent} \
-	%{?with_systemtap:--with-sdt}
+	%{?with_systemtap:--with-sdt} \
+	%{?with_static_libs:--enable-static}
 
 %{__make} -j1
 
@@ -138,10 +140,12 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}
 %{__rm} $RPM_BUILD_ROOT%{_docdir}/lttng-ust/{ChangeLog,README.md,java-agent.txt}
 
 %if %{with java}
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{context-jni,java,jul-jni,log4j-jni}.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{context-jni,java,jul-jni,log4j-jni}.la \
+	%{?with_static_libs:$RPM_BUILD_ROOT%{_libdir}/liblttng-ust-{context-jni,java,jul-jni,log4j-jni}.a}
 %endif
 %if %{with python}
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-python-agent.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblttng-ust-python-agent.la \
+	%{?with_static_libs:$RPM_BUILD_ROOT%{_libdir}/liblttng-ust-python-agent.a}
 %py_postclean
 %endif
 
@@ -163,7 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblttng-ust.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-ctl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-ctl.so.2
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-ctl.so.4
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblttng-ust-cyg-profile.so.0
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile-fast.so.*.*.*
@@ -217,6 +221,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/tracepoint_enabled.3*
 %{_examplesdir}/%{name}-%{version}
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblttng-ust.a
@@ -229,6 +234,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblttng-ust-libc-wrapper.a
 %{_libdir}/liblttng-ust-pthread-wrapper.a
 %{_libdir}/liblttng-ust-tracepoint.a
+%endif
 
 %if %{with java}
 %files -n java-lttng-ust
