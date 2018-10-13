@@ -69,15 +69,3 @@
 -	-L$(top_builddir)/liblttng-ust/.libs
 +liblttng_ust_python_agent_la_LIBADD = -lc \
 +	$(top_builddir)/liblttng-ust/liblttng-ust.la
---- lttng-ust-2.9.0/liblttng-ust-fd/Makefile.am.orig	2016-11-29 02:46:24.000000000 +0100
-+++ lttng-ust-2.9.0/liblttng-ust-fd/Makefile.am	2016-12-25 00:31:01.575081525 +0100
-@@ -5,7 +5,8 @@
- liblttng_ust_fd_la_SOURCES = \
- 	lttng-ust-fd.c
- liblttng_ust_fd_la_LIBADD = \
--	$(top_builddir)/liblttng-ust-comm/liblttng-ust-comm.la
-+	$(top_builddir)/liblttng-ust-comm/liblttng-ust-comm.la \
-+	$(top_builddir)/liblttng-ust/liblttng-ust.la
- 
- if LTTNG_UST_BUILD_WITH_LIBDL
- liblttng_ust_fd_la_LIBADD += -ldl
