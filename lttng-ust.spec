@@ -8,12 +8,12 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.10.3
+Version:	2.10.4
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	https://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	ffcfa8c1ba9a52f002d240e936e9afa2
+# Source0-md5:	19916ff0dec23c90f985586a8cbd1fd2
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
 Patch2:		%{name}-python.patch
