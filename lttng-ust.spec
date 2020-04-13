@@ -8,32 +8,34 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.11.0
+Version:	2.12.0
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	https://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	99823cfeb76562d753ffe67880e9cc59
+# Source0-md5:	3bf4a04c305271d13cf6596c4e7b9b3c
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
 Patch2:		%{name}-python.patch
 URL:		https://lttng.org/
 BuildRequires:	autoconf >= 2.59
-BuildRequires:	automake >= 1:1.9
+BuildRequires:	automake >= 1:1.12
 # for examples build
 BuildRequires:	cmake >= 2.8.11
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
+BuildRequires:	numactl-devel
 %{?with_python:BuildRequires:	python >= 1:2.7}
 BuildRequires:	rpmbuild(macros) >= 1.294
+BuildRequires:	sed >= 4.0
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
-BuildRequires:	userspace-rcu-devel >= 0.7.2
+BuildRequires:	userspace-rcu-devel >= 0.11
 %if %{with java}
 BuildRequires:	java-log4j
 BuildRequires:	jdk
 BuildRequires:	jpackage-utils
 %endif
-Requires:	userspace-rcu >= 0.7.2
+Requires:	userspace-rcu >= 0.11
 ExclusiveArch:	%{ix86} %{x8664} x32 %{arm} aarch64 mips ppc ppc64 s390 s390x tile
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -57,7 +59,7 @@ Summary:	Header files for LTTNG-UST libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek LTTNG-UST
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	userspace-rcu-devel >= 0.7.2
+Requires:	userspace-rcu-devel >= 0.11
 %{?with_systemtap:Requires:	systemtap-sdt-devel}
 
 %description devel
@@ -107,6 +109,8 @@ Agent Pythona do biblioteki LTTng Userspace Tracer.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+
+%{__sed} -i -e '1s,/usr/bin/env python$,%{__python},' tools/lttng-gen-tp
 
 %build
 %{__libtoolize}
@@ -210,6 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/liblttng-ust-tracepoint.la
 %{_includedir}/lttng
 %{_pkgconfigdir}/lttng-ust.pc
+%{_pkgconfigdir}/lttng-ust-ctl.pc
 %{_mandir}/man1/lttng-gen-tp.1*
 %{_mandir}/man3/do_tracepoint.3*
 %{_mandir}/man3/lttng-ust.3*
