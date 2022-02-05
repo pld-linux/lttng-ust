@@ -8,34 +8,35 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.12.1
-Release:	3
+Version:	2.13.1
+Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	https://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	11787d1df69b04dd7431614ab43b2e12
+# Source0-md5:	655f0d049a8feb694af6646d3a696d7a
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-java.patch
 Patch2:		%{name}-python.patch
 URL:		https://lttng.org/
-BuildRequires:	autoconf >= 2.59
+BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.12
 # for examples build
 BuildRequires:	cmake >= 2.8.11
-BuildRequires:	libstdc++-devel
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	numactl-devel
+BuildRequires:	pkgconfig
 %{?with_python:BuildRequires:	python >= 1:2.7}
 BuildRequires:	rpmbuild(macros) >= 1.294
 BuildRequires:	sed >= 4.0
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
-BuildRequires:	userspace-rcu-devel >= 0.11
+BuildRequires:	userspace-rcu-devel >= 0.13
 %if %{with java}
 BuildRequires:	java-log4j
 BuildRequires:	jdk
 BuildRequires:	jpackage-utils
 %endif
-Requires:	userspace-rcu >= 0.11
+Requires:	userspace-rcu >= 0.13
 ExclusiveArch:	%{ix86} %{x8664} x32 %{arm} aarch64 mips ppc ppc64 s390 s390x tile
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -43,8 +44,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		skip_post_check_so_1	liblttng-ust\.so.* liblttng-ust-cyg-profile\.so.* liblttng-ust-cyg-profile-fast\.so.* liblttng-ust-dl\.so.* liblttng-ust-java\.so.* liblttng-ust-python-agent\.so.* liblttng-ust-tracepoint\.so.*
 # non-function lttng_ust_context_info_tls symbol
 %define		skip_post_check_so_2	liblttng-ust-jul-jni\.so.* liblttng-ust-log4j-jni\.so.*
+# lttng_ust_sigbus_state symbol must be defined in executable
+%define		skip_post_check_so_3	liblttng-ust-ctl\.so.*
 
-%define		skip_post_check_so	%{skip_post_check_so_1} %{skip_post_check_so_2}
+%define		skip_post_check_so	%{skip_post_check_so_1} %{skip_post_check_so_2} %{skip_post_check_so_3}
 
 %description
 The LTTng Userspace Tracer (UST) is a library accompanied by a set of
@@ -59,7 +62,7 @@ Summary:	Header files for LTTNG-UST libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek LTTNG-UST
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	userspace-rcu-devel >= 0.11
+Requires:	userspace-rcu-devel >= 0.13
 %{?with_systemtap:Requires:	systemtap-sdt-devel}
 
 %description devel
@@ -167,32 +170,35 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING ChangeLog README.md
+%doc ChangeLog LICENSE README.md
 %attr(755,root,root) %{_libdir}/liblttng-ust.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust.so.1
+%attr(755,root,root) %{_libdir}/liblttng-ust-common.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-common.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-ctl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-ctl.so.4
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-ctl.so.5
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-cyg-profile.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-cyg-profile.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile-fast.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-cyg-profile-fast.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-cyg-profile-fast.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-dl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-dl.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-dl.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-fd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-fd.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-fd.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-fork.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-fork.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-fork.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-libc-wrapper.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-libc-wrapper.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-libc-wrapper.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-pthread-wrapper.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-pthread-wrapper.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-pthread-wrapper.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-tracepoint.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-tracepoint.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-tracepoint.so.1
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/lttng-gen-tp
 %attr(755,root,root) %{_libdir}/liblttng-ust.so
+%attr(755,root,root) %{_libdir}/liblttng-ust-common.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-ctl.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-cyg-profile-fast.so
@@ -203,6 +209,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblttng-ust-pthread-wrapper.so
 %attr(755,root,root) %{_libdir}/liblttng-ust-tracepoint.so
 %{_libdir}/liblttng-ust.la
+%{_libdir}/liblttng-ust-common.la
 %{_libdir}/liblttng-ust-ctl.la
 %{_libdir}/liblttng-ust-cyg-profile.la
 %{_libdir}/liblttng-ust-cyg-profile-fast.la
@@ -220,6 +227,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/lttng-ust.3*
 %{_mandir}/man3/lttng-ust-cyg-profile.3*
 %{_mandir}/man3/lttng-ust-dl.3*
+%{_mandir}/man3/lttng_ust_*.3*
 %{_mandir}/man3/tracef.3*
 %{_mandir}/man3/tracelog.3*
 %{_mandir}/man3/tracepoint.3*
@@ -230,6 +238,7 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblttng-ust.a
+%{_libdir}/liblttng-ust-common.a
 %{_libdir}/liblttng-ust-ctl.a
 %{_libdir}/liblttng-ust-cyg-profile.a
 %{_libdir}/liblttng-ust-cyg-profile-fast.a
@@ -273,7 +282,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n python-lttng-ust
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblttng-ust-python-agent.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-python-agent.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblttng-ust-python-agent.so.1
 %attr(755,root,root) %{_libdir}/liblttng-ust-python-agent.so
 %{py_sitescriptdir}/lttngust
 %{py_sitescriptdir}/lttngust-%{version}-py*.egg-info

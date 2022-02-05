@@ -1,11 +1,11 @@
---- lttng-ust-2.8.1/python-lttngust/Makefile.am.orig	2016-05-31 06:38:27.000000000 +0200
-+++ lttng-ust-2.8.1/python-lttngust/Makefile.am	2016-06-25 12:26:23.159661719 +0200
-@@ -6,7 +6,7 @@
- 	$(PYTHON) setup.py build --verbose
+--- lttng-ust-2.13.1/src/python-lttngust/Makefile.am.orig	2021-12-09 20:45:58.000000000 +0100
++++ lttng-ust-2.13.1/src/python-lttngust/Makefile.am	2022-02-05 10:58:51.238977525 +0100
+@@ -28,7 +28,7 @@ build-python-bindings.stamp: copy-static
+ 	touch $@
  
- install-exec-local:
--	@opts="--prefix=$(prefix) --verbose --no-compile $(DISTSETUPOPTS)"; \
-+	@opts="--prefix=$(prefix) --install-purelib=$(pythondir) --verbose --optimize=2 $(DISTSETUPOPTS)"; \
+ install-exec-local: build-python-bindings.stamp
+-	@opts="--prefix=$(prefix) --record $(INSTALLED_FILES) --verbose --no-compile $(DISTSETUPOPTS)"; \
++	@opts="--prefix=$(prefix) --install-purelib=$(pythondir) --record $(INSTALLED_FILES) --verbose --no-compile $(DISTSETUPOPTS)"; \
  	if [ "$(DESTDIR)" != "" ]; then \
  		opts="$$opts --root=$(DESTDIR)"; \
  	fi; \

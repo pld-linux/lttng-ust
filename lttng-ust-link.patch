@@ -1,53 +1,9 @@
---- lttng-ust-2.6.0/liblttng-ust-java/Makefile.am.orig	2015-01-26 21:09:30.334240517 +0100
-+++ lttng-ust-2.6.0/liblttng-ust-java/Makefile.am	2015-01-26 21:11:19.994235912 +0100
-@@ -12,7 +12,7 @@
- liblttng_ust_java_la_SOURCES = LTTngUst.c lttng_ust_java.h
- nodist_liblttng_ust_java_la_SOURCES = org_lttng_ust_LTTngUst.h
- 
--liblttng_ust_java_la_LIBADD = -lc -L$(top_builddir)/liblttng-ust/.libs -llttng-ust
-+liblttng_ust_java_la_LIBADD = -lc $(top_builddir)/liblttng-ust/liblttng-ust.la
- 
- $(jarfile): classnoinst.stamp
- 	$(JAR) cf $(JARFLAGS) $@ $(pkgpath)/*.class
---- lttng-ust-2.8.1/liblttng-ust-java-agent/jni/jul/Makefile.am.orig	2016-06-25 12:12:34.117486360 +0200
-+++ lttng-ust-2.8.1/liblttng-ust-java-agent/jni/jul/Makefile.am	2016-06-25 12:14:28.320201004 +0200
-@@ -7,7 +7,5 @@
- nodist_liblttng_ust_jul_jni_la_SOURCES = org_lttng_ust_agent_jul_LttngJulApi.h
- 
- liblttng_ust_jul_jni_la_LIBADD = -lc \
--	-L$(top_builddir)/liblttng-ust/.libs \
--	-L$(top_builddir)/liblttng-ust-java-agent/jni/common/.libs \
--	-llttng-ust-context-jni \
--	-llttng-ust
-+	$(top_builddir)/liblttng-ust-java-agent/jni/common/liblttng-ust-context-jni.la \
-+	$(top_builddir)/liblttng-ust/liblttng-ust.la
---- lttng-ust-2.8.1/liblttng-ust-java-agent/jni/log4j/Makefile.am.orig	2016-06-25 12:12:34.117486360 +0200
-+++ lttng-ust-2.8.1/liblttng-ust-java-agent/jni/log4j/Makefile.am	2016-06-25 12:15:29.779868049 +0200
-@@ -7,7 +7,5 @@
- nodist_liblttng_ust_log4j_jni_la_SOURCES = org_lttng_ust_agent_log4j_LttngLog4jApi.h
- 
- liblttng_ust_log4j_jni_la_LIBADD = -lc \
--	-L$(top_builddir)/liblttng-ust/.libs \
--	-L$(top_builddir)/liblttng-ust-java-agent/jni/common/.libs \
--	-llttng-ust-context-jni \
--	-llttng-ust
-+	$(top_builddir)/liblttng-ust-java-agent/jni/common/liblttng-ust-context-jni.la \
-+	$(top_builddir)/liblttng-ust/liblttng-ust.la
---- lttng-ust-2.8.1/liblttng-ust-java-agent/jni/common/Makefile.am.orig	2016-05-31 06:38:27.000000000 +0200
-+++ lttng-ust-2.8.1/liblttng-ust-java-agent/jni/common/Makefile.am	2016-06-25 12:15:51.336417933 +0200
-@@ -5,4 +5,4 @@
- 
- nodist_liblttng_ust_context_jni_la_SOURCES = org_lttng_ust_agent_context_LttngContextApi.h
- 
--liblttng_ust_context_jni_la_LIBADD = -lc -L$(top_builddir)/liblttng-ust/.libs -llttng-ust
-+liblttng_ust_context_jni_la_LIBADD = -lc $(top_builddir)/liblttng-ust/liblttng-ust.la
---- lttng-ust-2.12.1/liblttng-ust-python-agent/Makefile.am.orig	2021-02-26 18:44:15.434630867 +0100
-+++ lttng-ust-2.12.1/liblttng-ust-python-agent/Makefile.am	2021-02-26 18:46:37.011947396 +0100
-@@ -4,5 +4,5 @@
- AM_CFLAGS += -fno-strict-aliasing
- lib_LTLIBRARIES = liblttng-ust-python-agent.la
- liblttng_ust_python_agent_la_SOURCES = lttng_ust_python.c lttng_ust_python.h
--liblttng_ust_python_agent_la_LIBADD = -lc -llttng-ust \
--	-L$(top_builddir)/liblttng-ust/.libs
-+liblttng_ust_python_agent_la_LIBADD = -lc \
-+	$(top_builddir)/liblttng-ust/liblttng-ust.la
+urcu is needed for cds_list_for_each_entry_rcu (rcu_dereference_sym symbol)
+--- lttng-ust-2.13.1/src/lib/lttng-ust-ctl/Makefile.am.orig	2021-12-09 20:45:58.000000000 +0100
++++ lttng-ust-2.13.1/src/lib/lttng-ust-ctl/Makefile.am	2022-02-05 13:08:04.746973171 +0100
+@@ -16,4 +16,5 @@ liblttng_ust_ctl_la_LIBADD = \
+ 	$(top_builddir)/src/common/libcounter-clients.la \
+ 	$(top_builddir)/src/common/libustcomm.la \
+ 	$(top_builddir)/src/common/libcommon.la \
++	$(URCU_LIBS) \
+ 	$(DL_LIBS)

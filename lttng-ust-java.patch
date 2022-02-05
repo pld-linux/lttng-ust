@@ -1,6 +1,6 @@
---- lttng-ust-2.12.1/liblttng-ust-java/Makefile.am.orig	2021-02-26 18:55:34.153038775 +0100
-+++ lttng-ust-2.12.1/liblttng-ust-java/Makefile.am	2021-02-26 18:58:12.021196975 +0100
-@@ -26,7 +26,7 @@
+--- lttng-ust-2.13.1/src/lib/lttng-ust-java/Makefile.am.orig	2021-12-09 20:45:58.000000000 +0100
++++ lttng-ust-2.13.1/src/lib/lttng-ust-java/Makefile.am	2022-02-05 10:59:11.838865926 +0100
+@@ -29,7 +29,7 @@ org_lttng_ust_LTTngUst.h: $(jarfile)
  else
  org_lttng_ust_LTTngUst.h: jni-header.stamp
  
