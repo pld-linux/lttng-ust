@@ -26,6 +26,7 @@ BuildRequires:	libtool >= 2:2
 BuildRequires:	numactl-devel
 BuildRequires:	pkgconfig
 %{?with_python:BuildRequires:	python >= 1:2.7}
+%{?with_python:BuildRequires:	python-modules >= 1:2.7}
 BuildRequires:	rpmbuild(macros) >= 1.294
 BuildRequires:	sed >= 4.0
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
