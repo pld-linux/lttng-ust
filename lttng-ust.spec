@@ -8,12 +8,12 @@
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
-Version:	2.13.8
+Version:	2.13.9
 Release:	1
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	https://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
-# Source0-md5:	4077be3f26d293d95fd779d12b830a10
+# Source0-md5:	ab3bc006eb182bccd94aa0ead99c7201
 Patch0:		%{name}-link.patch
 Patch2:		%{name}-python.patch
 URL:		https://lttng.org/
@@ -122,6 +122,7 @@ Agent Pythona do biblioteki LTTng Userspace Tracer.
 %{__automake}
 export CLASSPATH=.:%{_javadir}/log4j.jar
 %configure \
+	PYTHON=%{__python} \
 	%{?with_java:JAVA_HOME="%{java_home}" JAVAC=javac} \
 	--disable-silent-rules \
 	%{?with_java:--enable-jni-interface --enable-java-agent-all} \
