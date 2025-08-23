@@ -100,6 +100,7 @@ Summary:	Python agent for LTTng Userspace Tracer library
 Summary(pl.UTF-8):	Agent Pythona do biblioteki LTTng Userspace Tracer
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
+Obsoletes:	python-lttng-ust < 2.14
 
 %description -n python3-lttng-ust
 Python agent for LTTng Userspace Tracer library.
