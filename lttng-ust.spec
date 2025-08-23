@@ -10,7 +10,7 @@ Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
 Version:	2.14.0
-Release:	1
+Release:	2
 License:	LGPL v2.1 (library), MIT (headers), GPL v2 (programs)
 Group:		Libraries
 Source0:	https://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
@@ -25,8 +25,10 @@ BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	numactl-devel
 BuildRequires:	pkgconfig
-%{?with_python:BuildRequires:	python3}
-%{?with_python:BuildRequires:	python3-modules}
+%{?with_python:BuildRequires:	python3 >= 1:3.2}
+%{?with_python:BuildRequires:	python3-modules >= 1:3.2}
+# for distutils (esp. with python 3.12+)
+%{?with_python:BuildRequires:	python3-setuptools}
 BuildRequires:	rpmbuild(macros) >= 1.294
 BuildRequires:	sed >= 4.0
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
@@ -112,7 +114,7 @@ Agent Pythona do biblioteki LTTng Userspace Tracer.
 %setup -q
 %patch -P0 -p1
 
-%{__sed} -i -e '1s,/usr/bin/env python$,%{__python},' tools/lttng-gen-tp
+%{__sed} -i -e '1s,/usr/bin/env python$,%{__python3},' tools/lttng-gen-tp
 
 %build
 %{__libtoolize}
