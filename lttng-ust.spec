@@ -1,6 +1,7 @@
+# TODO: java log4j2 support (--enable-java-agent-log4j2 or --enable-java-agent-all)
 #
 # Conditional build:
-%bcond_with	java		# JNI interface [builds with java-sun 1.6, but not gcj 4.9]
+%bcond_without	java		# JNI interface [builds with java-sun 1.6, but not gcj 4.9]
 %bcond_without	python		# Python agent
 %bcond_without	systemtap	# SystemTap integration
 %bcond_with	static_libs	# static libraries
@@ -123,7 +124,7 @@ export CLASSPATH=.:%{_javadir}/log4j.jar
 	PYTHON=%{__python3} \
 	%{?with_java:JAVA_HOME="%{java_home}" JAVAC=javac} \
 	--disable-silent-rules \
-	%{?with_java:--enable-jni-interface --enable-java-agent-all} \
+	%{?with_java:--enable-jni-interface --enable-java-agent-jul --enable-java-agent-log4j} \
 	%{?with_python:--enable-python-agent} \
 	%{?with_systemtap:--with-sdt} \
 	%{?with_static_libs:--enable-static}
