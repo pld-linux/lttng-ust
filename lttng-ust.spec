@@ -66,6 +66,9 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	userspace-rcu-devel >= 0.13
 %{?with_systemtap:Requires:	systemtap-sdt-devel}
+%if %{without static_libs}
+Obsoletes:	lttng-ust-static < %{version}-%{release}
+%endif
 
 %description devel
 Header files for LTTNG-UST libraries.
