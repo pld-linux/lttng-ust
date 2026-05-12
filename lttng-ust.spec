@@ -35,7 +35,7 @@ BuildRequires:	sed >= 4.0
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	userspace-rcu-devel >= 0.15
 %if %{with java}
-%?buildrequires_jdk}
+%{?buildrequires_jdk}
 BuildRequires:	java-log4j
 BuildRequires:	jpackage-utils
 %endif
