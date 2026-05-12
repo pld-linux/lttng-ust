@@ -1,0 +1,11 @@
+--- lttng-ust-2.15.0/src/common/utils.h.orig	2026-02-13 19:56:46.000000000 +0100
++++ lttng-ust-2.15.0/src/common/utils.h	2026-05-12 22:08:16.099346269 +0200
+@@ -39,7 +39,7 @@ unsigned int lttng_ust_fls_u32(uint32_t
+ static inline
+ unsigned int lttng_ust_fls_u64(uint64_t x)
+ {
+-	long r;
++	int64_t r;
+ 
+ 	__asm__ ("bsrq %1,%0\n\t"
+ 	    "jnz 1f\n\t"

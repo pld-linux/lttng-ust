@@ -17,6 +17,7 @@ Group:		Libraries
 Source0:	https://lttng.org/files/lttng-ust/%{name}-%{version}.tar.bz2
 # Source0-md5:	47ff5ce72d6ea65fb4afe23004b9d990
 Patch0:		%{name}-link.patch
+Patch1:		%{name}-x32.patch
 URL:		https://lttng.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.12
@@ -117,6 +118,7 @@ Agent Pythona do biblioteki LTTng Userspace Tracer.
 %prep
 %setup -q
 %patch -P0 -p1
+%patch -P1 -p1
 
 %{__sed} -i -e '1s,/usr/bin/env python$,%{__python3},' tools/lttng-gen-tp
 
