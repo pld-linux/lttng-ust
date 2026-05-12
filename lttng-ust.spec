@@ -6,6 +6,7 @@
 %bcond_without	systemtap	# SystemTap integration
 %bcond_with	static_libs	# static libraries
 #
+%{?use_default_jdk:%use_default_jdk}
 Summary:	LTTng Userspace Tracer
 Summary(pl.UTF-8):	LTTng Userspace Tracer - narzędzia LTTng do śledzenia przestrzeni użytkownika
 Name:		lttng-ust
@@ -29,13 +30,13 @@ BuildRequires:	pkgconfig
 %{?with_python:BuildRequires:	python3-modules >= 1:3.2}
 # for distutils (esp. with python 3.12+)
 %{?with_python:BuildRequires:	python3-setuptools}
-BuildRequires:	rpmbuild(macros) >= 1.294
+BuildRequires:	rpmbuild(macros) >= 2.022
 BuildRequires:	sed >= 4.0
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	userspace-rcu-devel >= 0.15
 %if %{with java}
+%?buildrequires_jdk}
 BuildRequires:	java-log4j
-BuildRequires:	jdk
 BuildRequires:	jpackage-utils
 %endif
 Requires:	userspace-rcu >= 0.15
